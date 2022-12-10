@@ -16,13 +16,11 @@ function Show ({bread, index}) {
                 have gluten.
             </p>
             <img src={bread.image} alt={bread.name} />
-
-            <li><a href="/breads">Go home</a></li>
-
-            <a href={`/breads/${bread.id}/edit`}><button>Edit</button></a>
-            
+            <p>Baked by {bread.baker}</p>
+            <a href={`/breads/${bread.id}/edit`}><button>Edit</button></a>                       
         <form action={`/breads/${bread.id}?_method=DELETE`} method="POST">
             <input type='submit' value="DELETE"/>
+            <li><a href="/breads">Go home</a></li>
         </form>
         </Default>
       )
