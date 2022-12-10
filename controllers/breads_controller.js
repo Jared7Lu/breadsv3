@@ -1,6 +1,7 @@
 const express = require('express')
 const breads = express.Router()
 const Bread = require('../models/bread.js')
+const Baker = require('../models/baker.js')
 
 // INDEX
 breads.get('/', (req, res) => {
@@ -27,14 +28,17 @@ breads.put('/:id', (req, res) => {
         res.redirect(`/breads/${req.params.id}`) 
       })
   })
-  
-  
-// NEW
+
+// in the new route
 breads.get('/new', (req, res) => {
-    res.render('new')
+    Baker.find()
+        .then(foundBakers => {
+            res.render('new', {
+                bakers: foundBakers
+            })
+      })
 })
 
-// SHOW
 // SHOW
 breads.get('/:id', (req, res) => {
     Bread.findById(req.params.id)
@@ -47,8 +51,6 @@ breads.get('/:id', (req, res) => {
         })
       })
   
-
-
 // EDIT
 breads.get('/:id/edit', (req, res) => {
     Bread.findById(req.params.id) 
