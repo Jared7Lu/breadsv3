@@ -3,17 +3,18 @@ const breads = express.Router()
 const Bread = require('../models/bread.js')
 const Baker = require('../models/baker.js')
 
-// INDEX
-breads.get('/', (req, res) => {
-    Bread.find()
-        .then(foundBreads => {
-            res.render('index', {
-                breads: foundBreads,
-                title: 'Index Page'
-            })
-        })
-})
-
+//Index
+breads.get('/', async (req, res) => {
+    const foundBakers = await Baker.find().lean()
+    const foundBreads = await Bread.find().limit(2).lean()
+    res.render('index', {
+      breads: foundBreads,
+      bakers: foundBakers,
+      title: 'Index Page'
+    })
+  })
+  
+  
 
 // UPDATE
 breads.put('/:id', (req, res) => {
@@ -42,6 +43,7 @@ breads.get('/new', (req, res) => {
 // SHOW
 breads.get('/:id', (req, res) => {
     Bread.findById(req.params.id)
+        .populate('baker')
         .then(foundBread => {
           const bakedBy = foundBread.getBakedBy() 
           console.log(bakedBy)
@@ -53,13 +55,18 @@ breads.get('/:id', (req, res) => {
   
 // EDIT
 breads.get('/:id/edit', (req, res) => {
-    Bread.findById(req.params.id) 
-      .then(foundBread => { 
-        res.render('edit', {
-          bread: foundBread 
-        })
+    Baker.find()
+      .then(foundBakers => {
+          Bread.findById(req.params.id)
+            .then(foundBread => {
+              res.render('edit', {
+                  bread: foundBread, 
+                  bakers: foundBakers 
+              })
+            })
       })
   })
+  
   
 // DELETE
 breads.delete('/:id', (req, res) => {
